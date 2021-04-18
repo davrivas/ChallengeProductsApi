@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChallengeProductsApi.Controllers
+namespace ChallengeProductsApi.WebApi.Controllers
 {
     [Route("api/[controller]")]
     public class ProductController : Controller
@@ -45,9 +45,9 @@ namespace ChallengeProductsApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ProductModel> Update(ProductModel productModel, int id)
+        public async Task<ActionResult<ProductModel>> Update(ProductModel productModel, int id)
         {
-            return _productService.Update(id, productModel);
+            return await _productService.Update(id, productModel);
         }
 
         [HttpDelete("{id}")]

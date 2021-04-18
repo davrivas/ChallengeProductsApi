@@ -12,7 +12,7 @@ namespace ChallengeProductsApi.Business.Services.Interfaces
         Task<ProductModel> GetByIdAsync(int id);
         Task<List<ProductModel>> SearchProductsAsync(string search);
         Task<ProductModel> InsertAsync(ProductModel product);
-        ProductModel Update(int id, ProductModel product);
+        Task<ProductModel> Update(int id, ProductModel product);
         Task<int> DeleteAsync(int id);
     }
 }

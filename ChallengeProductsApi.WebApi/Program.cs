@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChallengeProductsApi
+namespace ChallengeProductsApi.WebApi
 {
     public class Program
     {

@@ -1,7 +1,10 @@
-﻿using ChallengeProductsApi.Data.Entities;
+﻿using ChallengeProductsApi.Data.Context;
+using ChallengeProductsApi.Data.Entities;
 using ChallengeProductsApi.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,34 +12,53 @@ namespace ChallengeProductsApi.Data.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        public Task DeleteAsync(int id)
+        private readonly ProductContext _context;
+
+        public ProductRepository(ProductContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<List<Product>> GetAllAsync()
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+            _context.Remove(product);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Product> GetByIdAsync(int id)
+        public async Task<List<Product>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Products.ToListAsync();
         }
 
-        public Task InsertAsync(Product product)
+        public async Task<Product> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<List<Product>> SearchProductsAsync(string search)
+        public async Task InsertAsync(Product product)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(product);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Product product)
+        public async Task<bool> ProductTypeExists(int id)
         {
-            throw new NotImplementedException();
+            return await _context.ProductTypes.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Product>> SearchProductsAsync(string search)
+        {
+            return await _context
+                .Products
+                .Where(x => x.Description.ToLower().Contains(search.ToLower()))
+                .ToListAsync();
+        }
+
+        public async Task Update(Product product)
+        {
+            _context.Update(product);
+            await _context.SaveChangesAsync();
         }
     }
 }

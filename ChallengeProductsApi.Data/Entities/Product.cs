@@ -13,6 +13,6 @@ namespace ChallengeProductsApi.Data.Entities
         public bool IsActive { get; set; }
 
         public int ProductTypeId { get; set; }
-        public ProductType ProductType { get; set; }
+        public virtual ProductType ProductType { get; set; }
     }
 }

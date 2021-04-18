@@ -1,3 +1,6 @@
+using ChallengeProductsApi.Business;
+using ChallengeProductsApi.Business.Services;
+using ChallengeProductsApi.Business.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChallengeProductsApi
+namespace ChallengeProductsApi.WebApi
 {
     public class Startup
     {
@@ -24,6 +27,9 @@ namespace ChallengeProductsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IProductService, ProductService>();
+            ServicesInjector.ConfigureServices(services, Configuration);
+
             services.AddControllers();
         }
 

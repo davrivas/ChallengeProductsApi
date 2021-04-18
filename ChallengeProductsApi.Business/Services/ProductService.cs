@@ -43,7 +43,7 @@ namespace ChallengeProductsApi.Business.Services
             throw new NotImplementedException();
         }
 
-        public ProductModel Update(int id, ProductModel product)
+        public Task<ProductModel> Update(int id, ProductModel product)
         {
             throw new NotImplementedException();
         }
