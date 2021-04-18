@@ -11,8 +11,8 @@ namespace ChallengeProductsApi.Business.Services.Interfaces
         Task<List<ProductModel>> GetAllAsync();
         Task<ProductModel> GetByIdAsync(int id);
         Task<List<ProductModel>> SearchProductsAsync(string search);
-        Task<ProductModel> InsertAsync(ProductModel product);
-        Task<ProductModel> Update(int id, ProductModel product);
+        Task<ProductModel> InsertAsync(AddProductModel product);
+        Task<ProductModel> Update(int id, AddProductModel product);
         Task<int> DeleteAsync(int id);
     }
 }

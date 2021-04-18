@@ -19,7 +19,7 @@ namespace ChallengeProductsApi.Data.Context
         {
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Product");
+                entity.ToTable("Product", "dbo");
 
                 entity.HasKey(e => e.Id);
 
@@ -36,7 +36,7 @@ namespace ChallengeProductsApi.Data.Context
 
             modelBuilder.Entity<ProductType>(entity =>
             {
-                entity.ToTable("ProductType");
+                entity.ToTable("ProductType", "dbo");
 
                 entity.HasKey(e => e.Id);
 

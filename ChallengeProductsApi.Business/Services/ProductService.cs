@@ -1,5 +1,7 @@
-﻿using ChallengeProductsApi.Business.Models;
+﻿using AutoMapper;
+using ChallengeProductsApi.Business.Models;
 using ChallengeProductsApi.Business.Services.Interfaces;
+using ChallengeProductsApi.Data.Entities;
 using ChallengeProductsApi.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,10 +13,13 @@ namespace ChallengeProductsApi.Business.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository,
+            IMapper mapper)
         {
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
         public async Task<int> DeleteAsync(int id)
@@ -23,29 +28,69 @@ namespace ChallengeProductsApi.Business.Services
             return id;
         }
 
-        public Task<List<ProductModel>> GetAllAsync()
+        public async Task<List<ProductModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var products = await _productRepository.GetAllAsync();
+            return _mapper.Map<List<ProductModel>>(products);
         }
 
-        public Task<ProductModel> GetByIdAsync(int id)
+        public async Task<ProductModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository.GetByIdAsync(id);
+
+            if (product == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<ProductModel>(product);
         }
 
-        public Task<ProductModel> InsertAsync(ProductModel product)
+        public async Task<ProductModel> InsertAsync(AddProductModel product)
         {
-            throw new NotImplementedException();
+            var productTypeExists = await _productRepository.ProductTypeExists(product.ProductTypeId);
+
+            if (!productTypeExists)
+            {
+                throw new Exception($"Product type with id '{product.ProductTypeId}' does not exist");
+            }
+
+            var newProduct = _mapper.Map<Product>(product);
+            await _productRepository.InsertAsync(newProduct);
+
+            var returnValue = await _productRepository.GetByIdAsync(newProduct.Id);
+            return _mapper.Map<ProductModel>(returnValue);
         }
 
-        public Task<List<ProductModel>> SearchProductsAsync(string search)
+        public async Task<List<ProductModel>> SearchProductsAsync(string search)
         {
-            throw new NotImplementedException();
+            var products = await _productRepository.SearchProductsAsync(search);
+            return _mapper.Map<List<ProductModel>>(products);
         }
 
-        public Task<ProductModel> Update(int id, ProductModel product)
+        public async Task<ProductModel> Update(int id, AddProductModel product)
         {
-            throw new NotImplementedException();
+            var existingProduct = await _productRepository.GetByIdAsync(id);
+            if (existingProduct == null)
+            {
+                throw new Exception($"Product with id '{id}' does not exist");
+            }
+
+            var productTypeExists = await _productRepository.ProductTypeExists(product.ProductTypeId);
+            if (!productTypeExists)
+            {
+                throw new Exception($"Product type with id '{product.ProductTypeId}' does not exist");
+            }
+
+            existingProduct.Description = product.Description;
+            existingProduct.IsActive = product.IsActive;
+            existingProduct.Price = product.Price;
+            existingProduct.ProductTypeId = product.ProductTypeId;
+            existingProduct.SoldDate = product.SoldDate;
+            await _productRepository.UpdateAsync(existingProduct);
+
+            var returnValue = await _productRepository.GetByIdAsync(id);
+            return _mapper.Map<ProductModel>(returnValue);
         }
     }
 }

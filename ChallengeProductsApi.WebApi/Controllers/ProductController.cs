@@ -28,7 +28,14 @@ namespace ChallengeProductsApi.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> GetById(int id)
         {
-            return await _productService.GetByIdAsync(id);
+            var product = await _productService.GetByIdAsync(id);
+
+            if (product == null)
+            {
+                return NotFound($"Product with id '{id}' was not found");
+            }
+
+            return product;
         }
 
         [HttpGet]
@@ -39,13 +46,13 @@ namespace ChallengeProductsApi.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductModel>> Insert(ProductModel productModel)
+        public async Task<ActionResult<ProductModel>> Insert(AddProductModel productModel)
         {
             return await _productService.InsertAsync(productModel);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductModel>> Update(ProductModel productModel, int id)
+        public async Task<ActionResult<ProductModel>> Update(AddProductModel productModel, int id)
         {
             return await _productService.Update(id, productModel);
         }

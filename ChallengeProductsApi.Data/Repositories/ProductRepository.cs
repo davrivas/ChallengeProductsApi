@@ -55,7 +55,7 @@ namespace ChallengeProductsApi.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task Update(Product product)
+        public async Task UpdateAsync(Product product)
         {
             _context.Update(product);
             await _context.SaveChangesAsync();
