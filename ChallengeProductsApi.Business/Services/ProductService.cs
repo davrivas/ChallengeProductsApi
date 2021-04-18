@@ -24,6 +24,13 @@ namespace ChallengeProductsApi.Business.Services
 
         public async Task<int> DeleteAsync(int id)
         {
+            var productExists = await _productRepository.ProductExists(id);
+
+            if (!productExists)
+            {
+                throw new Exception($"Product with id {id} does not exist");
+            }
+
             await _productRepository.DeleteAsync(id);
             return id;
         }
@@ -52,7 +59,7 @@ namespace ChallengeProductsApi.Business.Services
 
             if (!productTypeExists)
             {
-                throw new Exception($"Product type with id '{product.ProductTypeId}' does not exist");
+                throw new Exception($"Product type with id {product.ProductTypeId} does not exist");
             }
 
             var newProduct = _mapper.Map<Product>(product);
@@ -62,9 +69,9 @@ namespace ChallengeProductsApi.Business.Services
             return _mapper.Map<ProductModel>(returnValue);
         }
 
-        public async Task<List<ProductModel>> SearchProductsAsync(string search)
+        public async Task<List<ProductModel>> SearchAsync(string search)
         {
-            var products = await _productRepository.SearchProductsAsync(search);
+            var products = await _productRepository.SearchAsync(search);
             return _mapper.Map<List<ProductModel>>(products);
         }
 
@@ -73,13 +80,13 @@ namespace ChallengeProductsApi.Business.Services
             var existingProduct = await _productRepository.GetByIdAsync(id);
             if (existingProduct == null)
             {
-                throw new Exception($"Product with id '{id}' does not exist");
+                throw new Exception($"Product with id {id} does not exist");
             }
 
             var productTypeExists = await _productRepository.ProductTypeExists(product.ProductTypeId);
             if (!productTypeExists)
             {
-                throw new Exception($"Product type with id '{product.ProductTypeId}' does not exist");
+                throw new Exception($"Product type with id {product.ProductTypeId} does not exist");
             }
 
             existingProduct.Description = product.Description;

@@ -11,7 +11,11 @@ namespace ChallengeProductsApi.Business.Mapper
     {
         public ProductMapper()
         {
-            CreateMap<Product, ProductModel>();
+            CreateMap<Product, ProductModel>()
+                .ForMember(
+                    dest => dest.ProductType,
+                    opt => opt.MapFrom(a => a.ProductType.Name)
+                );
             CreateMap<Product, AddProductModel>();
 
             CreateMap<AddProductModel, Product>();

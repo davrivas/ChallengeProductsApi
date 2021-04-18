@@ -1,10 +1,8 @@
 ﻿using ChallengeProductsApi.Business.Models;
 using ChallengeProductsApi.Business.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ChallengeProductsApi.WebApi.Controllers
@@ -22,45 +20,87 @@ namespace ChallengeProductsApi.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ProductModel>>> GetAll()
         {
-            return await _productService.GetAllAsync();
+            try
+            {
+                return await _productService.GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> GetById(int id)
         {
-            var product = await _productService.GetByIdAsync(id);
-
-            if (product == null)
+            try
             {
-                return NotFound($"Product with id '{id}' was not found");
-            }
+                var product = await _productService.GetByIdAsync(id);
 
-            return product;
+                if (product == null)
+                {
+                    return NotFound($"Product with id {id} was not found");
+                }
+
+                return product;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
         [Route("[action]")]
         public async Task<ActionResult<List<ProductModel>>> Search(string q)
         {
-            return await _productService.SearchProductsAsync(q);
+            try
+            {
+                return await _productService.SearchAsync(q);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductModel>> Insert(AddProductModel productModel)
+        public async Task<ActionResult<ProductModel>> Insert([FromBody] AddProductModel productModel)
         {
-            return await _productService.InsertAsync(productModel);
+            try
+            {
+                return await _productService.InsertAsync(productModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductModel>> Update(AddProductModel productModel, int id)
+        public async Task<ActionResult<ProductModel>> Update([FromBody] AddProductModel productModel, int id)
         {
-            return await _productService.Update(id, productModel);
+            try
+            {
+                return await _productService.Update(id, productModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> Delete(int id)
         {
-            return await _productService.DeleteAsync(id);
+            try
+            {
+                return await _productService.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

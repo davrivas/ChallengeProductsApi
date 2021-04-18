@@ -10,10 +10,11 @@ namespace ChallengeProductsApi.Data.Repositories.Interfaces
     {
         Task<List<Product>> GetAllAsync();
         Task<Product> GetByIdAsync(int id);
-        Task<List<Product>> SearchProductsAsync(string search);
+        Task<List<Product>> SearchAsync(string search);
         Task InsertAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
+        Task<bool> ProductExists(int id);
         Task<bool> ProductTypeExists(int id);
     }
 }

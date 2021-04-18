@@ -28,12 +28,16 @@ namespace ChallengeProductsApi.Data.Repositories
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products
+                .Include(x => x.ProductType)
+                .ToListAsync();
         }
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Products
+                .Include(x => x.ProductType)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task InsertAsync(Product product)
@@ -42,16 +46,21 @@ namespace ChallengeProductsApi.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ProductExists(int id)
+        {
+            return await _context.Products.AnyAsync(x => x.Id == id);
+        }
+
         public async Task<bool> ProductTypeExists(int id)
         {
             return await _context.ProductTypes.AnyAsync(x => x.Id == id);
         }
 
-        public async Task<List<Product>> SearchProductsAsync(string search)
+        public async Task<List<Product>> SearchAsync(string search)
         {
-            return await _context
-                .Products
-                .Where(x => x.Description.ToLower().Contains(search.ToLower()))
+            return await _context.Products
+                .Include(x => x.ProductType)
+                .Where(x => EF.Functions.Like(x.Description, $"%{search}%"))
                 .ToListAsync();
         }
 
